@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  --color-maingreen: #C5D89D;
+  --color-mainpink:rgb(132, 65, 110) ;
+  --color-headbg:rgba(236, 189, 221, 0.158) ;
+  --font-josefin: "Josefin Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  min-width: 320px;
+
+  
+
+ 
+}
+
