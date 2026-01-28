@@ -31,7 +31,7 @@ const ProductCard = ({ product }) => {
 
           <button
             onClick={() => addToCart(product)}
-            className="px-6 py-2 text-md font-medium text-red-50 bg-mainpink rounded-xl hover:bg-yellow-800 transition duration-300"
+            className="px-6 py-2 text-md font-medium text-red-50 bg-mainpink rounded-xl active:bg-yellow-800 hover:bg-yellow-800 transition duration-300"
           >
             Add to Cart
           </button>

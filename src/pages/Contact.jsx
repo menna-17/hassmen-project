@@ -16,43 +16,69 @@ export default function Contact() {
 
   const [submitted, setSubmitted] = useState(false);
 
-  // Validation functions
+  // ---------------- Validation functions ----------------
   const validateName = (value) => {
-    if (!value.trim()) return "Name is required";
-    if (value.length < 2) return "Name must be at least 2 characters";
+    const trimmed = value.trim();
+    if (!trimmed) return "Name is required";
+    if (trimmed.length < 3) return "Name must be at least 3 characters";
+    if (trimmed.length > 45) return "Name cannot exceed 45 characters";
     return "";
   };
 
   const validateEmail = (value) => {
-    if (!value) return "Email is required";
-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
-      return "Invalid email address";
-    }
+    const trimmed = value.trim();
+    if (!trimmed) return "Email is required";
+    if (/^\d+$/.test(trimmed)) return "Email cannot be only digits";
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    if (!emailRegex.test(trimmed)) return "Email must be a valid address";
     return "";
   };
 
   const validateMessage = (value) => {
-    if (!value.trim()) return "Message is required";
-    if (value.length < 10) return "Message must be at least 10 characters";
+    const trimmed = value.trim();
+    if (!trimmed) return "Message is required";
+    if (trimmed.length < 10) return "Message must be at least 10 characters";
+    if (trimmed.length > 200) return "Message cannot exceed 200 characters";
+    if (/^\d+$/.test(trimmed)) return "Message cannot be only digits";
     return "";
   };
 
+  // ---------------- Handle input change ----------------
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let newValue = value;
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Filter name input to allow only letters and spaces, max 45 chars
+    if (name === "name") {
+      newValue = value.replace(/[^a-zA-Z\s]/g, "");
+      if (newValue.length > 45) newValue = newValue.slice(0, 45);
+    }
 
+    // Limit message to 200 chars
+    if (name === "message" && newValue.length > 200) {
+      newValue = newValue.slice(0, 200);
+    }
+
+    // Limit email to 100 chars (optional)
+    if (name === "email" && newValue.length > 100) {
+      newValue = newValue.slice(0, 100);
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: newValue }));
+
+    // Live validation
     setErrors((prev) => ({
       ...prev,
       [name]:
         name === "name"
-          ? validateName(value)
+          ? validateName(newValue)
           : name === "email"
-          ? validateEmail(value)
-          : validateMessage(value),
+          ? validateEmail(newValue)
+          : validateMessage(newValue),
     }));
   };
 
+  // ---------------- Handle submit ----------------
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -65,23 +91,23 @@ export default function Contact() {
     setErrors(newErrors);
 
     if (!newErrors.name && !newErrors.email && !newErrors.message) {
-      console.log(formData);
+      console.log("Message submitted:", formData);
       setSubmitted(true);
     }
   };
 
   return (
-    <div className="min-h-screen  lg:pt-2 flex items-center justify-center px-4 font-josefin pt-20 mb-4">
+    <div className="min-h-screen lg:pt-2 flex items-center justify-center px-4 font-josefin pt-20 mb-4">
       <div className="bg-white shadow-lg rounded-2xl w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 overflow-hidden">
 
         {/* Left Section */}
         <div className="bg-maingreen text-mainpink p-8 flex flex-col justify-center space-y-6">
           <h2 className="text-3xl font-bold">Get in Touch</h2>
           <p>
-           Have a question, feedback, or need any help? The Hasmin team is here for you! Send us a message and we’ll respond as soon as we can.
+            Have a question, feedback, or need any help? The Hasmin team is here for you! Send us a message and we’ll respond as soon as we can.
           </p>
 
-          {/* Contact Info with Icons */}
+          {/* Contact Info */}
           <div className="space-y-4 text-sm">
             <div className="flex items-center gap-3">
               <FiMapPin className="text-yellow-800 text-lg" />
@@ -107,7 +133,7 @@ export default function Contact() {
           </h3>
 
           {submitted ? (
-            <div className="bg-mainpink text-pink-50 p-4 rounded-lg">
+            <div className="bg-mainpink text-pink-50 p-4 rounded-2xl">
               Thank you! Your message has been sent.
             </div>
           ) : (
@@ -123,12 +149,14 @@ export default function Contact() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`mt-1 w-full rounded-lg border border-mainpink px-4 py-2 focus:ring-2 focus:outline-none ${
-                    errors.name
-                      ? "border-red-500 focus:ring-red-500"
-                      : "focus:ring-mainpink"
-                  }`}
                   placeholder="Your name"
+                  className={`mt-1 w-full rounded-lg border border-mainpink px-4 py-2
+                    placeholder:text-yellow-800
+                    focus:ring-2 focus:outline-none ${
+                      errors.name
+                        ? "border-red-500 focus:ring-red-500"
+                        : "focus:ring-mainpink"
+                    }`}
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm mt-1">{errors.name}</p>
@@ -145,12 +173,14 @@ export default function Contact() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`mt-1 w-full rounded-lg border border-mainpink px-4 py-2 focus:ring-2 focus:outline-none ${
-                    errors.email
-                      ? "border-red-500 focus:ring-red-500"
-                      : "focus:ring-mainpink"
-                  }`}
-                  placeholder="you@example.com"
+                  placeholder="Your email"
+                  className={`mt-1 w-full rounded-lg border border-mainpink px-4 py-2
+                    placeholder:text-yellow-800
+                    focus:ring-2 focus:outline-none ${
+                      errors.email
+                        ? "border-red-500 focus:ring-red-500"
+                        : "focus:ring-mainpink"
+                    }`}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -167,17 +197,17 @@ export default function Contact() {
                   rows="4"
                   value={formData.message}
                   onChange={handleChange}
-                  className={`mt-1 w-full rounded-lg border border-mainpink px-4 py-2 focus:ring-2 focus:outline-none ${
-                    errors.message
-                      ? "border-red-500 focus:ring-red-500"
-                      : "focus:ring-mainpink"
-                  }`}
                   placeholder="Write your message..."
+                  className={`mt-1 w-full rounded-lg border border-mainpink px-4 py-2
+                    placeholder:text-yellow-800
+                    focus:ring-2 focus:outline-none ${
+                      errors.message
+                        ? "border-red-500 focus:ring-red-500"
+                        : "focus:ring-mainpink"
+                    }`}
                 />
                 {errors.message && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.message}
-                  </p>
+                  <p className="text-red-500 text-sm mt-1">{errors.message}</p>
                 )}
               </div>
 

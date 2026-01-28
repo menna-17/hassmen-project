@@ -6,7 +6,8 @@ const data = {
       description: "Flaky and buttery classic croissant.",
       price: 115,
       category: "croissant",
-      image: "c1.jpg"
+      image: "c1.jpg",
+      stock: 5,
     },
     {
       id: 2,
@@ -14,7 +15,8 @@ const data = {
       description: "Croissant filled with rich dark chocolate.",
       price: 145,
       category: "croissant",
-      image: "c2.jpg"
+      image: "c2.jpg",
+      stock: 7,
     },
     {
       id: 3,
@@ -22,7 +24,8 @@ const data = {
       description: "Topped with almond slices and powdered sugar.",
       price: 160,
       category: "croissant",
-      image: "c3.jpg"
+      image: "c3.jpg",
+      stock: 9,
     },
     {
       id: 4,
@@ -30,7 +33,8 @@ const data = {
       description: "Savory croissant with ham and melted cheese.",
       price: 150,
       category: "croissant",
-      image: "c4.jpg"
+      image: "c4.jpg",
+      stock: 6,
     },
     {
       id: 5,
@@ -38,7 +42,8 @@ const data = {
       description: "Savory option with spinach and feta filling.",
       price: 135,
       category: "croissant",
-      image: "c5.jpg"
+      image: "c5.jpg",
+      stock: 4,
     },
     {
       id: 6,
@@ -46,7 +51,8 @@ const data = {
       description: "Tangy lemon filling with a crisp crust.",
       price: 155,
       category: "tart",
-      image: "t1.jpg"
+      image: "t1.jpg",
+      stock: 8,
     },
     {
       id: 7,
@@ -54,7 +60,8 @@ const data = {
       description: "Fresh strawberries over custard in a tart shell.",
       price: 140,
       category: "tart",
-      image: "t2.jpg"
+      image: "t2.jpg",
+      stock: 5,
     },
     {
       id: 8,
@@ -62,7 +69,8 @@ const data = {
       description: "Rich chocolate ganache in a buttery crust.",
       price: 165,
       category: "tart",
-      image: "t3.jpg"
+      image: "t3.jpg",
+      stock: 7,
     },
     {
       id: 9,
@@ -70,7 +78,8 @@ const data = {
       description: "Classic apple slices baked with cinnamon sugar.",
       price: 150,
       category: "tart",
-      image: "t4.jpg"
+      image: "t4.jpg",
+      stock: 6,
     },
     {
       id: 10,
@@ -78,7 +87,8 @@ const data = {
       description: "Sweet pecans in a buttery caramel filling.",
       price: 130,
       category: "tart",
-      image: "t5.jpg"
+      image: "t5.jpg",
+      stock: 3,
     },
     {
       id: 11,
@@ -86,7 +96,8 @@ const data = {
       description: "Moist chocolate cake with chocolate frosting.",
       price: 150,
       category: "cake",
-      image: "k1.jpg"
+      image: "k1.jpg",
+      stock: 9,
     },
     {
       id: 12,
@@ -94,7 +105,8 @@ const data = {
       description: "Classic vanilla sponge with buttercream.",
       price: 130,
       category: "cake",
-      image: "k2.jpg"
+      image: "k2.jpg",
+      stock: 4,
     },
     {
       id: 13,
@@ -102,7 +114,8 @@ const data = {
       description: "Rich red velvet with cream cheese frosting.",
       price: 145,
       category: "cake",
-      image: "k3.jpg"
+      image: "k3.jpg",
+      stock: 8,
     },
     {
       id: 14,
@@ -110,7 +123,8 @@ const data = {
       description: "Spiced carrot cake with walnuts and cream cheese frosting.",
       price: 210,
       category: "cake",
-      image: "k4.jpg"
+      image: "k4.jpg",
+      stock: 7,
     },
     {
       id: 15,
@@ -118,7 +132,8 @@ const data = {
       description: "Moist lemon cake with zesty glaze.",
       price: 190,
       category: "cake",
-      image: "k5.jpg"
+      image: "k5.jpg",
+      stock: 5,
     },
     {
       id: 16,
@@ -126,7 +141,8 @@ const data = {
       description: "Flaky pastry filled with melted cheese.",
       price: 160,
       category: "puff_pastry",
-      image: "p1.jpg"
+      image: "p1.jpg",
+      stock: 6,
     },
     {
       id: 17,
@@ -134,7 +150,8 @@ const data = {
       description: "Savory puff filled with spinach and herbs.",
       price: 175,
       category: "puff_pastry",
-      image: "p2.jpg"
+      image: "p2.jpg",
+      stock: 9,
     },
     {
       id: 18,
@@ -142,7 +159,8 @@ const data = {
       description: "Puff pastry filled with creamy mushrooms.",
       price: 180,
       category: "puff_pastry",
-      image: "p3.jpg"
+      image: "p3.jpg",
+      stock: 4,
     },
     {
       id: 19,
@@ -150,7 +168,8 @@ const data = {
       description: "Sweet apple filling baked in puff pastry.",
       price: 135,
       category: "puff_pastry",
-      image: "p4.jpg"
+      image: "p4.jpg",
+      stock: 3,
     },
     {
       id: 20,
@@ -158,7 +177,8 @@ const data = {
       description: "Flaky pastry filled with chocolate cream.",
       price: 150,
       category: "puff_pastry",
-      image: "p5.jpg"
+      image: "p5.jpg",
+      stock: 7,
     },
     {
       id: 21,
@@ -166,7 +186,8 @@ const data = {
       description: "Classic cookie with chocolate chips.",
       price: 140,
       category: "cookies",
-      image: "ck.jpg"
+      image: "ck.jpg",
+      stock: 6,
     },
     {
       id: 22,
@@ -174,7 +195,8 @@ const data = {
       description: "Chewy cookie with oats and raisins.",
       price: 155,
       category: "cookies",
-      image: "ck2.jpg"
+      image: "ck2.jpg",
+      stock: 5,
     },
     {
       id: 23,
@@ -182,7 +204,8 @@ const data = {
       description: "Rich peanut butter flavored cookie.",
       price: 145,
       category: "cookies",
-      image: "ck3.jpg"
+      image: "ck3.jpg",
+      stock: 8,
     },
     {
       id: 24,
@@ -190,7 +213,8 @@ const data = {
       description: "Chocolate cookie with chocolate chunks.",
       price: 180,
       category: "cookies",
-      image: "ck4.jpg"
+      image: "ck4.jpg",
+      stock: 9,
     },
     {
       id: 25,
@@ -198,7 +222,8 @@ const data = {
       description: "Sweet and soft sugar cookie.",
       price: 135,
       category: "cookies",
-      image: "ck5.jpg"
+      image: "ck5.jpg",
+      stock: 4,
     },
     {
       id: 26,
@@ -206,7 +231,8 @@ const data = {
       description: "Soft roll with cinnamon sugar filling.",
       price: 160,
       category: "cinnamon",
-      image: "cr1.jpg"
+      image: "cr1.jpg",
+      stock: 6,
     },
     {
       id: 27,
@@ -214,7 +240,8 @@ const data = {
       description: "Classic roll topped with vanilla icing.",
       price: 170,
       category: "cinnamon",
-      image: "cr2.jpg"
+      image: "cr2.jpg",
+      stock: 5,
     },
     {
       id: 28,
@@ -222,7 +249,8 @@ const data = {
       description: "Cinnamon roll topped with caramelized pecans.",
       price: 185,
       category: "cinnamon",
-      image: "cr3.jpg"
+      image: "cr3.jpg",
+      stock: 7,
     },
     {
       id: 29,
@@ -230,7 +258,8 @@ const data = {
       description: "Cinnamon roll with chocolate swirls inside.",
       price: 190,
       category: "cinnamon",
-      image: "cr4.jpg"
+      image: "cr4.jpg",
+      stock: 8,
     },
     {
       id: 30,
@@ -238,9 +267,10 @@ const data = {
       description: "Filled with apple chunks and cinnamon sugar.",
       price: 175,
       category: "cinnamon",
-      image: "cr5.jpg"
-    }
-  ]
+      image: "cr5.jpg",
+      stock: 3,
+    },
+  ],
 };
 
 export { data };

@@ -3,7 +3,7 @@ import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 
 const CheckoutPage = () => {
-  const { cartItems, updateQuantity, clearCart } = useCart(); // ✅ added clearCart
+  const { cartItems, clearCart } = useCart();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -23,48 +23,29 @@ const CheckoutPage = () => {
     0
   );
 
-  /* -------------------- HANDLE SUBMIT -------------------- */
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    console.log("Order placed:", formData, cartItems);
-
-    clearCart();          // ✅ clear the cart
-    navigate("/thankyou"); // ✅ go to Thank You page
-  };
-
-  /* -------------------- VALIDATION -------------------- */
-  const validateField = (name, value) => {
-    switch (name) {
-      case "fullName":
-        if (!value.trim()) return "Full Name is required";
-        if (value.trim().length < 3)
-          return "Full Name must be at least 3 characters";
-        break;
-      case "email":
-        if (!value.trim()) return "Email is required";
-        if (!/^\S+@\S+\.\S+$/.test(value)) return "Please enter a valid email";
-        break;
-      case "phone":
-        if (!value.trim()) return "Phone is required";
-        if (!/^\d{10,11}$/.test(value))
-          return "Phone number must be 10–11 digits";
-        break;
-      case "address":
-        if (!value.trim()) return "Address is required";
-        break;
-      case "area":
-        if (!value) return "Please select an area";
-        break;
-      default:
-        return "";
-    }
-    return "";
-  };
-
+  /* -------------------- HANDLE CHANGE -------------------- */
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    // Restrict input while typing
+    if (name === "fullName") {
+      value = value.replace(/[^a-zA-Z\s]/g, "");
+      if (value.length > 45) value = value.slice(0, 45);
+    }
+
+    if (name === "phone") {
+      value = value.replace(/\D/g, "");
+      if (value.length > 11) value = value.slice(0, 11);
+    }
+
+    if (name === "address") {
+      if (value.length > 80) value = value.slice(0, 80);
+    }
+
+    if (name === "notes") {
+      if (value.length > 200) value = value.slice(0, 200);
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (touched[name]) {
@@ -75,6 +56,7 @@ const CheckoutPage = () => {
     }
   };
 
+  /* -------------------- HANDLE BLUR -------------------- */
   const handleBlur = (e) => {
     const { name, value } = e.target;
     setTouched((prev) => ({ ...prev, [name]: true }));
@@ -82,6 +64,53 @@ const CheckoutPage = () => {
       ...prev,
       [name]: validateField(name, value),
     }));
+  };
+
+  /* -------------------- VALIDATION -------------------- */
+  const validateField = (name, value) => {
+    const trimmedValue = value.trim();
+
+    switch (name) {
+      case "fullName":
+        if (!trimmedValue) return "Name is required";
+        if (trimmedValue.length < 3) return "Name must be at least 3 characters";
+        if (trimmedValue.length > 45) return "Name cannot exceed 45 characters";
+        break;
+
+      case "email":
+        if (!trimmedValue) return "Email is required";
+        if (/^\d+$/.test(trimmedValue)) return "Email cannot be only digits";
+        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(trimmedValue))
+          return "Email must be valid";
+        break;
+
+      case "phone":
+        if (!trimmedValue) return "Phone number is required";
+        if (!/^(010|011|012|015)\d{8}$/.test(trimmedValue))
+          return "Phone must start with 010, 011, 012, or 015 and be 11 digits";
+        break;
+
+      case "address":
+        if (!trimmedValue) return "Address is required";
+        if (trimmedValue.length < 7) return "Address must be at least 7 characters";
+        if (trimmedValue.length > 80) return "Address cannot exceed 80 characters";
+        if (/^\d+$/.test(trimmedValue)) return "Address cannot be only digits";
+        break;
+
+      case "area":
+        if (!value) return "Please select an area";
+        break;
+
+      case "notes":
+        if (trimmedValue.length > 100) return "Notes cannot exceed 100 characters";
+        if (/^\d+$/.test(trimmedValue)) return "Notes cannot be only digits";
+        break;
+
+      default:
+        return "";
+    }
+
+    return "";
   };
 
   const validateForm = () => {
@@ -100,15 +129,20 @@ const CheckoutPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  /* -------------------- QUANTITY HANDLERS -------------------- */
-  const increaseQty = (item) => updateQuantity(item.id, item.quantity + 1);
-  const decreaseQty = (item) => {
-    if (item.quantity > 1) updateQuantity(item.id, item.quantity - 1);
+  /* -------------------- HANDLE SUBMIT -------------------- */
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm() || cartItems.length === 0) return;
+
+    console.log("Order placed:", formData, cartItems);
+
+    clearCart();
+    navigate("/thankyou");
   };
 
   /* -------------------- INPUT CLASSES -------------------- */
   const inputBase =
-    "w-full p-3 bg-transparent rounded text-yellow-800 placeholder-yellow-800 focus:outline-none focus:ring-2";
+    "w-full p-3 bg-transparent rounded-xl text-yellow-800 placeholder-yellow-800 focus:outline-none focus:ring-2";
 
   const inputClass = (name) =>
     `${inputBase} ${
@@ -135,47 +169,39 @@ const CheckoutPage = () => {
                 Order Summary
               </h3>
 
-              <div className="space-y-4">
-                {cartItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-4 text-yellow-800"
-                  >
-                    <span className="flex-1 truncate" title={item.name}>
-                      {item.name}
-                    </span>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => decreaseQty(item)}
-                        className="w-7 h-7 rounded-full bg-mainpink text-red-50 hover:bg-maingreen transition duration-300"
+              {cartItems.length === 0 ? (
+                <p className="text-yellow-800 font-semibold">Your cart is empty</p>
+              ) : (
+                <div className="space-y-3">
+                  {cartItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-center text-yellow-800 border-b border-mainpink pb-2 last:border-b-0"
+                    >
+                      <span
+                        className="flex-1 font-semibold truncate"
+                        title={item.name}
                       >
-                        −
-                      </button>
-
-                      <span className="font-semibold min-w-[20px] text-center">
-                        {item.quantity}
+                        <span className="hidden sm:inline">{item.name}</span>
+                        <span className="sm:hidden">
+                          {item.name.split(" ")[0]}{" "}
+                          {item.name.split(" ")[1]?.slice(0, 2)}…
+                        </span>
+                        <span className="ml-1 font-normal whitespace-nowrap">
+                          x {item.quantity}
+                        </span>
                       </span>
 
-                      <button
-                        type="button"
-                        onClick={() => increaseQty(item)}
-                        className="w-7 h-7 rounded-full bg-mainpink text-red-50 hover:bg-maingreen transition duration-300"
-                      >
-                        +
-                      </button>
+                      <span className="font-semibold whitespace-nowrap">
+                        {(item.price * item.quantity).toFixed(2)}
+                        <span className="ml-1 text-sm">EGP</span>
+                      </span>
                     </div>
+                  ))}
+                </div>
+              )}
 
-                    <span className="w-24 text-right">
-                      {(item.price * item.quantity).toFixed(2)}
-                      <span className="text-sm">EGP</span>
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="border-t mt-4 pt-4 flex justify-between font-bold">
+              <div className="border-t border-mainpink mt-4 pt-4 flex justify-between font-bold">
                 <span className="text-xl text-mainpink">Subtotal</span>
                 <span className="text-2xl text-mainpink">
                   {subtotal.toFixed(2)}
@@ -193,97 +219,91 @@ const CheckoutPage = () => {
                 Shipping Details
               </h3>
 
-              {/* Full Name */}
-              <div>
-                <input
-                  name="fullName"
-                  placeholder="Full Name"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={inputClass("fullName")}
-                />
-                {errors.fullName && touched.fullName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
-                )}
-              </div>
+              <input
+                name="fullName"
+                placeholder="Name"
+                value={formData.fullName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={inputClass("fullName")}
+              />
+              {errors.fullName && touched.fullName && (
+                <p className="text-red-500 text-sm">{errors.fullName}</p>
+              )}
 
-              {/* Email */}
-              <div>
-                <input
-                  name="email"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={inputClass("email")}
-                />
-                {errors.email && touched.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                )}
-              </div>
+              <input
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={inputClass("email")}
+              />
+              {errors.email && touched.email && (
+                <p className="text-red-500 text-sm">{errors.email}</p>
+              )}
 
-              {/* Phone */}
-              <div>
-                <input
-                  name="phone"
-                  placeholder="Phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={inputClass("phone")}
-                />
-                {errors.phone && touched.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-                )}
-              </div>
+              <input
+                name="phone"
+                placeholder="Phone"
+                value={formData.phone}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={inputClass("phone")}
+              />
+              {errors.phone && touched.phone && (
+                <p className="text-red-500 text-sm">{errors.phone}</p>
+              )}
 
-              {/* Address */}
-              <div>
-                <input
-                  name="address"
-                  placeholder="Address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={inputClass("address")}
-                />
-                {errors.address && touched.address && (
-                  <p className="text-red-500 text-sm mt-1">{errors.address}</p>
-                )}
-              </div>
+              <input
+                name="address"
+                placeholder="Address"
+                value={formData.address}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={inputClass("address")}
+              />
+              {errors.address && touched.address && (
+                <p className="text-red-500 text-sm">{errors.address}</p>
+              )}
 
-              {/* Area */}
-              <div>
-                <select
-                  name="area"
-                  value={formData.area}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={inputClass("area")}
-                >
-                  <option value="">Select Area</option>
-                  <option value="Madinaty">Madinaty</option>
-                  <option value="Tagmo3">The 5th Settlement</option>
-                  <option value="NasrCity">Nasr City</option>
-                </select>
-                {errors.area && touched.area && (
-                  <p className="text-red-500 text-sm mt-1">{errors.area}</p>
-                )}
-              </div>
+              <select
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={inputClass("area")}
+              >
+                <option value="">Select Area</option>
+                <option value="Madinaty">Madinaty</option>
+                <option value="Tagmo3">The 5th Settlement</option>
+                <option value="NasrCity">Nasr City</option>
+              </select>
+              {errors.area && touched.area && (
+                <p className="text-red-500 text-sm">{errors.area}</p>
+              )}
 
-              {/* Notes */}
               <textarea
                 name="notes"
                 placeholder="Order Notes"
                 value={formData.notes}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className={`${inputBase} border border-mainpink`}
               />
+              {errors.notes && touched.notes && (
+                <p className="text-red-500 text-sm">{errors.notes}</p>
+              )}
 
+              {/* Place Order Button */}
               <button
                 type="submit"
-                className="w-full bg-mainpink text-red-50 py-3 rounded-2xl font-semibold hover:bg-maingreen transition duration-300"
+                disabled={cartItems.length === 0}
+                className={`w-full py-3 rounded-2xl font-semibold transition duration-300 ${
+                  cartItems.length === 0
+                    ? "bg-mainpink/40 text-red-50 cursor-not-allowed"
+                    : "bg-mainpink text-red-50 hover:bg-maingreen"
+                }`}
               >
                 Place Order
               </button>

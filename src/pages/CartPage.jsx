@@ -22,7 +22,9 @@ const CartPage = () => {
 
   // Handle increment
   const handleIncrement = (item) => {
-    updateQuantity(item.id, item.quantity + 1);
+    if (item.quantity < item.stock) {
+      updateQuantity(item.id, item.quantity + 1);
+    }
   };
 
   return (
@@ -81,7 +83,13 @@ const CartPage = () => {
                   <button
                     type="button"
                     onClick={() => handleIncrement(item)}
-                    className="w-7 h-7 rounded-full bg-mainpink text-red-50 hover:bg-maingreen transition duration-300"
+                    disabled={item.quantity >= item.stock}
+                    className={`w-7 h-7 rounded-full text-red-50 transition duration-300
+    ${
+      item.quantity >= item.stock
+        ? "bg-mainpink/40 cursor-not-allowed"
+        : "bg-mainpink hover:bg-maingreen"
+    }`}
                   >
                     +
                   </button>
