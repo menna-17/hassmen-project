@@ -79,12 +79,12 @@ const CheckoutPage = () => {
       case "email":
         if (!trimmedValue) return "Email is required";
         if (/^\d+$/.test(trimmedValue)) return "Email cannot be only digits";
-        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(trimmedValue))
-          return "Email must be valid";
 
-        // ✅ EXTRA VALIDATION: must end with .com
-        if (!trimmedValue.toLowerCase().endsWith(".com"))
-          return "Email must end with .com";
+        // ✅ Updated realistic Gmail/Yahoo validation
+        if (
+          !/^[a-zA-Z0-9]+([._+-]?[a-zA-Z0-9]+)*@(gmail\.com|googlemail\.com|yahoo\.com|yahoo\.co\.uk)$/i.test(trimmedValue)
+        )
+          return "Email must be a valid Gmail or Yahoo address";
         break;
 
       case "phone":

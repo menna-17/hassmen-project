@@ -30,12 +30,11 @@ export default function Contact() {
     if (!trimmed) return "Email is required";
     if (/^\d+$/.test(trimmed)) return "Email cannot be only digits";
 
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    if (!emailRegex.test(trimmed)) return "Email must be a valid address";
-
-    // Extra validation: must end with .com
-    if (!trimmed.toLowerCase().endsWith(".com")) {
-      return "Email must end with .com";
+    // ✅ Updated realistic Gmail/Yahoo validation
+    if (
+      !/^[a-zA-Z0-9]+([._+-]?[a-zA-Z0-9]+)*@(gmail\.com|googlemail\.com|yahoo\.com|yahoo\.co\.uk)$/i.test(trimmed)
+    ) {
+      return "Email must be a valid Gmail or Yahoo address";
     }
 
     return "";
