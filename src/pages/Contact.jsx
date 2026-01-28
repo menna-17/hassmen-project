@@ -29,8 +29,15 @@ export default function Contact() {
     const trimmed = value.trim();
     if (!trimmed) return "Email is required";
     if (/^\d+$/.test(trimmed)) return "Email cannot be only digits";
+
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if (!emailRegex.test(trimmed)) return "Email must be a valid address";
+
+    // Extra validation: must end with .com
+    if (!trimmed.toLowerCase().endsWith(".com")) {
+      return "Email must end with .com";
+    }
+
     return "";
   };
 
@@ -59,7 +66,7 @@ export default function Contact() {
       newValue = newValue.slice(0, 200);
     }
 
-    // Limit email to 100 chars (optional)
+    // Limit email to 100 chars
     if (name === "email" && newValue.length > 100) {
       newValue = newValue.slice(0, 100);
     }
@@ -104,7 +111,8 @@ export default function Contact() {
         <div className="bg-maingreen text-mainpink p-8 flex flex-col justify-center space-y-6">
           <h2 className="text-3xl font-bold">Get in Touch</h2>
           <p>
-            Have a question, feedback, or need any help? The Hasmin team is here for you! Send us a message and we’ll respond as soon as we can.
+            Have a question, feedback, or need any help? The Hasmin team is here
+            for you! Send us a message and we’ll respond as soon as we can.
           </p>
 
           {/* Contact Info */}

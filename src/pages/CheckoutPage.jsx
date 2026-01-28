@@ -27,7 +27,6 @@ const CheckoutPage = () => {
   const handleChange = (e) => {
     let { name, value } = e.target;
 
-    // Restrict input while typing
     if (name === "fullName") {
       value = value.replace(/[^a-zA-Z\s]/g, "");
       if (value.length > 45) value = value.slice(0, 45);
@@ -82,6 +81,10 @@ const CheckoutPage = () => {
         if (/^\d+$/.test(trimmedValue)) return "Email cannot be only digits";
         if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(trimmedValue))
           return "Email must be valid";
+
+        // ✅ EXTRA VALIDATION: must end with .com
+        if (!trimmedValue.toLowerCase().endsWith(".com"))
+          return "Email must end with .com";
         break;
 
       case "phone":
@@ -178,23 +181,11 @@ const CheckoutPage = () => {
                       key={item.id}
                       className="flex justify-between items-center text-yellow-800 border-b border-mainpink pb-2 last:border-b-0"
                     >
-                      <span
-                        className="flex-1 font-semibold truncate"
-                        title={item.name}
-                      >
-                        <span className="hidden sm:inline">{item.name}</span>
-                        <span className="sm:hidden">
-                          {item.name.split(" ")[0]}{" "}
-                          {item.name.split(" ")[1]?.slice(0, 2)}…
-                        </span>
-                        <span className="ml-1 font-normal whitespace-nowrap">
-                          x {item.quantity}
-                        </span>
+                      <span className="flex-1 font-semibold truncate">
+                        {item.name} x {item.quantity}
                       </span>
-
-                      <span className="font-semibold whitespace-nowrap">
-                        {(item.price * item.quantity).toFixed(2)}
-                        <span className="ml-1 text-sm">EGP</span>
+                      <span className="font-semibold">
+                        {(item.price * item.quantity).toFixed(2)} EGP
                       </span>
                     </div>
                   ))}
@@ -204,8 +195,7 @@ const CheckoutPage = () => {
               <div className="border-t border-mainpink mt-4 pt-4 flex justify-between font-bold">
                 <span className="text-xl text-mainpink">Subtotal</span>
                 <span className="text-2xl text-mainpink">
-                  {subtotal.toFixed(2)}
-                  <span className="text-sm">EGP</span>
+                  {subtotal.toFixed(2)} EGP
                 </span>
               </div>
             </div>
@@ -295,7 +285,6 @@ const CheckoutPage = () => {
                 <p className="text-red-500 text-sm">{errors.notes}</p>
               )}
 
-              {/* Place Order Button */}
               <button
                 type="submit"
                 disabled={cartItems.length === 0}
